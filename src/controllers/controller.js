@@ -1,5 +1,4 @@
 import { PDFLoader } from "langchain/document_loaders/fs/pdf"
-import pdfjsLib from 'pdfjs-dist'
 import { OpenAIChat } from "langchain/llms/openai"
 import { OpenAIEmbeddings } from "langchain/embeddings/openai"
 import service from "../services/service.js"
@@ -13,14 +12,10 @@ let chain = null
 class Controller {
     async upload(req, res) {
         const pdfBuffer = req.file.buffer
-    
-        const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(pdfBuffer) })
-        await loadingTask.promise
 
         const blob = new Blob([pdfBuffer], { type: 'application/pdf' })
 
         const loader = new PDFLoader(blob)
-
         const docs = await loader.load()
 
         const serv = new service(new OpenAIEmbeddings())
